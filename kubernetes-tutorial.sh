@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+APP_NAME=hello-node
+
 function _help() {
 cat <<EOH
 kubernetes-tutorial commands:
@@ -11,6 +13,10 @@ setup     1. Installs Minikube, kubectl and docker-machine-driver-xhyve.
 build     Build your Docker image, using the Minikube Docker daemon
 
 deploy    Create a Deployment that manages a Pod
+
+expose    Make the containers accessible from outside the Kubernetes virtual network
+
+open      Automatically opens up a browser window using a local IP address that serves your app.
 EOH
 }
 
@@ -43,12 +49,20 @@ case ${1} in
   build)
     # Build your Docker image, using the Minikube Docker daemon.
     eval $(minikube docker-env)
-    docker build -t hello-node:v1 .
+    docker build -t $APP_NAME:v1 .
     ;;
 
   deploy)
-    kubectl run hello-node --image=hello-node:v1 --port=8080
+    kubectl run $APP_NAME --image=$APP_NAME:v1 --port=8080
     kubectl get deployments
+    ;;
+
+  expose)
+    kubectl expose deployment $APP_NAME --type=LoadBalancer
+    ;;
+
+  open)
+    minikube service hello-node
     ;;
 
   *|help|-h)
