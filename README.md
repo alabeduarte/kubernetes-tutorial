@@ -9,5 +9,5 @@ Learnings from [Hello Minikube](https://kubernetes.io/docs/tutorials/stateless-a
 # 2. Starts Minikube cluster.
 # 3. Configure Minikube context.
 
-$ ./setup.sh
+$ ./kubernetes-tutorial.sh setup
 ```
