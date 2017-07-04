@@ -9,6 +9,8 @@ setup     1. Installs Minikube, kubectl and docker-machine-driver-xhyve.
           3. Configure Minikube context.
 
 build     Build your Docker image, using the Minikube Docker daemon
+
+deploy    Create a Deployment that manages a Pod
 EOH
 }
 
@@ -42,6 +44,11 @@ case ${1} in
     # Build your Docker image, using the Minikube Docker daemon.
     eval $(minikube docker-env)
     docker build -t hello-node:v1 .
+    ;;
+
+  deploy)
+    kubectl run hello-node --image=hello-node:v1 --port=8080
+    kubectl get deployments
     ;;
 
   *|help|-h)
