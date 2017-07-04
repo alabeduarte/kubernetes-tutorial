@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Print each command before executing
+set -x
+
 APP_NAME=hello-node
 
 function _help() {
@@ -16,7 +19,11 @@ deploy    Create a Deployment that manages a Pod
 
 expose    Make the containers accessible from outside the Kubernetes virtual network
 
-open      Automatically opens up a browser window using a local IP address that serves your app.
+open      Automatically opens up a browser window using a local IP address that serves your app
+
+update    Update the image of your Deployment
+
+clean     Can clean up the resources
 EOH
 }
 
@@ -59,10 +66,22 @@ case ${1} in
 
   expose)
     kubectl expose deployment $APP_NAME --type=LoadBalancer
+    kubectl get services
     ;;
 
   open)
-    minikube service hello-node
+    minikube service $APP_NAME
+    ;;
+
+  update)
+    eval $(minikube docker-env)
+    docker build -t $APP_NAME:v2 .
+    kubectl set image deployment/$APP_NAME $APP_NAME=$APP_NAME:v2
+    ;;
+
+  clean)
+    kubectl delete service $APP_NAME
+    kubectl delete deployment $APP_NAME
     ;;
 
   *|help|-h)
